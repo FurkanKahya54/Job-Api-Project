@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  job_api:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./jobs.db:/app/jobs.db
+      - ./:/app
+    environment:
+      FLASK_ENV: development
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - job_api
+    environment:
+      # Tarayıcıdan çalıştırırken backend localhost üzerinden
+      VITE_API_BASE: "http://localhost:5000"
